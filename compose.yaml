@@ -1,0 +1,44 @@
+services:
+  # Banco de Dados Principal
+  postgres:
+    image: postgres:16-alpine
+    container_name: ticketpulse-db
+    environment:
+      POSTGRES_DB: ticketpulse
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ticketpulse-net
+
+  # Cache e Distributed Lock
+  redis:
+    image: redis:7-alpine
+    container_name: ticketpulse-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - ticketpulse-net
+
+  # Mensageria
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: ticketpulse-mq
+    ports:
+      - "5672:5672"      # Porta AMQP
+      - "15672:15672"    # UI de Gerenciamento
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin_password
+    networks:
+      - ticketpulse-net
+
+volumes:
+  postgres_data:
+
+networks:
+  ticketpulse-net:
+    driver: bridge
