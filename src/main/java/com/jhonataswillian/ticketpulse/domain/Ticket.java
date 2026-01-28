@@ -26,7 +26,7 @@ public class Ticket {
     @Column(nullable = false)
     private TicketStatus status = TicketStatus.AVAILABLE;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
     private Event event;
 }
