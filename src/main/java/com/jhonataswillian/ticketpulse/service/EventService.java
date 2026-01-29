@@ -46,4 +46,12 @@ public class EventService {
 
         return EventResponseDTO.fromEntity(event);
     }
+
+    @Transactional(readOnly = true)
+    public List<EventResponseDTO> findAll() {
+        return eventRepository.findAll()
+                .stream()
+                .map(EventResponseDTO::fromEntity)
+                .toList();
+    }
 }
