@@ -3,9 +3,9 @@ spring:
     name: ticketpulse
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/ticketpulse
-    username: admin
-    password: admin_password
+    url: jdbc:postgresql://localhost:5433/ticketpulse
+    username: postgres
+    password: postgres
 
   jpa:
     hibernate:
