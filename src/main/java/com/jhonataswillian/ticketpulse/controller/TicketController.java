@@ -21,7 +21,7 @@ public class TicketController {
 
     @PostMapping("/purchase")
     public ResponseEntity<String> buyTicket(@RequestBody @Valid TicketPurchaseDTO dto) {
-        ticketService.buyTicket(dto.ticketId());
-        return ResponseEntity.ok("Compra realizada com sucesso!");
+        ticketService.buyTicket(dto);
+        return ResponseEntity.ok("Compra realizada com sucesso! Você receberá um e-mail em breve.");
     }
 }
