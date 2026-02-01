@@ -10,6 +10,12 @@ public class NotificationService {
 
     @RabbitListener(queues = RabbitConfig.QUEUE_SALES_CONFIRMATION)
     public void handleSale(TicketSoldEvent event) {
+
+        // Simular erro crítico
+        if ("erro@teste.com".equals(event.customerEmail())) {
+            throw new RuntimeException("Falha simulada no envio de e-mail!");
+        }
+
         // Simular processamento pesado
         System.out.println("------------------------------------------------");
         System.out.println("E-MAIL RECEBIDO NA FILA: Processando venda do Ticket: " + event.ticketId());
