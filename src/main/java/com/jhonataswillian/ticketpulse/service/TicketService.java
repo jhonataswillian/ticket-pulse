@@ -3,6 +3,7 @@ package com.jhonataswillian.ticketpulse.service;
 import com.jhonataswillian.ticketpulse.domain.Ticket;
 import com.jhonataswillian.ticketpulse.domain.TicketStatus;
 import com.jhonataswillian.ticketpulse.dto.TicketPurchaseDTO;
+import com.jhonataswillian.ticketpulse.dto.TicketResponseDTO;
 import com.jhonataswillian.ticketpulse.dto.TicketSoldEvent;
 import com.jhonataswillian.ticketpulse.infra.queue.RabbitConfig;
 import com.jhonataswillian.ticketpulse.repository.TicketRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,6 +29,13 @@ public class TicketService {
         this.ticketRepository = ticketRepository;
         this.redisTemplate = redisTemplate;
         this.rabbitTemplate = rabbitTemplate;
+    }
+
+    public List<TicketResponseDTO> findAvailableByEventId(UUID eventId) {
+        return ticketRepository.findByEventIdAndStatus(eventId, TicketStatus.AVAILABLE)
+                .stream()
+                .map(TicketResponseDTO::fromEntity)
+                .toList();
     }
 
     @Transactional
