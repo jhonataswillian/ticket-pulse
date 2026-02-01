@@ -20,12 +20,12 @@ graph TD
     User((Usuário)) -->|HTTP POST /buy| API[TicketPulse API]
     
     subgraph "Processamento Síncrono"
-        API -->|1. Adquirir Lock (SETNX)| Redis[(Redis)]
-        API -->|2. Commit da Transação| DB[(PostgreSQL)]
+        API -->|"1. Adquirir Lock (SETNX)"| Redis[(Redis)]
+        API -->|"2. Commit da Transação"| DB[(PostgreSQL)]
     end
     
     subgraph "Processamento Assíncrono"
-        API -->|3. Publicar Evento| RabbitMQ{RabbitMQ}
+        API -->|"3. Publicar Evento"| RabbitMQ{RabbitMQ}
         RabbitMQ -->|Roteamento| Queue[Fila: Vendas]
         Queue -->|Consumir| Consumer[Serviço de Notificação]
         Consumer -->|Simular| Email[Enviador de E-mail]
