@@ -5,6 +5,7 @@ import com.jhonataswillian.ticketpulse.domain.TicketStatus;
 import com.jhonataswillian.ticketpulse.dto.TicketPurchaseDTO;
 import com.jhonataswillian.ticketpulse.dto.TicketResponseDTO;
 import com.jhonataswillian.ticketpulse.dto.TicketSoldEvent;
+import com.jhonataswillian.ticketpulse.infra.exception.IngressoIndisponivelException;
 import com.jhonataswillian.ticketpulse.infra.queue.RabbitConfig;
 import com.jhonataswillian.ticketpulse.repository.TicketRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -47,15 +48,15 @@ public class TicketService {
                 .setIfAbsent(lockKey, "LOCKED", Duration.ofMinutes(2));
 
         if(!lockAcquired) {
-            throw new RuntimeException("Ingresso em processamento por outro usuário. Tente novamente.");
+            throw new IngressoIndisponivelException("Ingresso em processamento por outro usuário. Tente novamente.");
         }
 
         try {
             Ticket ticket = ticketRepository.findById(ticketId)
-                    .orElseThrow(() -> new RuntimeException("Ingresso não encontrado"));
+                    .orElseThrow(() -> new IngressoIndisponivelException("Ingresso não encontrado"));
 
             if (ticket.getStatus() != TicketStatus.AVAILABLE) {
-                throw new RuntimeException("Ingresso indisponível (Status: " + ticket.getStatus() + ")");
+                throw new IngressoIndisponivelException("Ingresso indisponível (Status: " + ticket.getStatus() + ")");
             }
 
             ticket.setStatus(TicketStatus.SOLD);
