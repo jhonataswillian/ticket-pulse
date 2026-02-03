@@ -6,6 +6,7 @@ import com.jhonataswillian.ticketpulse.dto.TicketPurchaseDTO;
 import com.jhonataswillian.ticketpulse.dto.TicketResponseDTO;
 import com.jhonataswillian.ticketpulse.dto.TicketSoldEvent;
 import com.jhonataswillian.ticketpulse.infra.exception.IngressoIndisponivelException;
+import com.jhonataswillian.ticketpulse.infra.exception.IngressoNaoEncontradoException;
 import com.jhonataswillian.ticketpulse.infra.queue.RabbitConfig;
 import com.jhonataswillian.ticketpulse.repository.TicketRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -53,7 +54,7 @@ public class TicketService {
 
         try {
             Ticket ticket = ticketRepository.findById(ticketId)
-                    .orElseThrow(() -> new IngressoIndisponivelException("Ingresso não encontrado"));
+                    .orElseThrow(() -> new IngressoNaoEncontradoException("Ingresso não encontrado com ID: " + ticketId));
 
             if (ticket.getStatus() != TicketStatus.AVAILABLE) {
                 throw new IngressoIndisponivelException("Ingresso indisponível (Status: " + ticket.getStatus() + ")");
